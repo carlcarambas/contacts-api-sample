@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: Contacts API
+  description: API for managing contacts
+  version: 1.0.0
+servers:
+  - url: http://localhost:9090
+    description: Local development server
+paths:
+  /contacts:
+    get:
+      summary: Retrieve all contacts
+      description: Fetches a list of all contacts.
+      responses:
+        '200':
+          description: A list of contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred"
+
+    post:
+      summary: Create a new contact
+      description: Adds a new contact with the specified details.
+      requestBody:
+        description: The contact information to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: "Carl"
+                lastName:
+                  type: string
+                  example: "Carambas"
+                emailAddress:
+                  type: string
+                  format: email
+                  example: "my@mail.com"
+              required:
+                - firstName
+                - lastName
+                - emailAddress
+      responses:
+        '200':
+          description: Contact created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Contact created successfully"
+                  contact:
+                    $ref: '#/components/schemas/Contact'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid input data"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred"
+
+  /contacts/{id}:
+    get:
+      summary: Retrieve a contact by ID
+      description: Fetches a contact by its unique identifier.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the contact.
+      responses:
+        '200':
+          description: Contact found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '404':
+          description: Contact not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Contact with ID {id} not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred"
+
+components:
+  schemas:
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the contact.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        emailAddress:
+          type: string
+          format: email
+      required:
+        - firstName
+        - lastName
+        - emailAddress
