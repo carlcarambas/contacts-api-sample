@@ -48,3 +48,5 @@ Optionally, I've included a Dockerfile to run a mongodb instance
 ```bash
 npm run start
 ```
+
+### See api.yaml for a API documentation
